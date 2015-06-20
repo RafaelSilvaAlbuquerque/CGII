@@ -1,0 +1,165 @@
+#include "display.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <QLabel>
+
+#define FRUSTUM_SIZE 50
+
+Display::Display(QWidget *parent) :
+    QGLWidget(parent)
+{
+}
+
+QImage Display::draw(QImage image,int li,int co){
+
+    QRgb value;
+
+    float resolucao_tela_linhas = li;
+    float resolucao_tela_colunas = co;
+
+    float resolucao_imagen_linhas = li;
+    float resolucao_imagen_colunas = co;
+
+    int var = resolucao_imagen_linhas*resolucao_imagen_colunas;
+
+    cam.ampixel(resolucao_tela_linhas,resolucao_tela_colunas,resolucao_imagen_linhas,resolucao_imagen_colunas);
+    cam.map(resolucao_tela_linhas,resolucao_tela_colunas,resolucao_imagen_linhas,resolucao_imagen_colunas);
+
+    cam.coordcamera(0.0,0.0,1.0);
+
+//------------------------------------------------------------------------------------------------------------------------------------
+    //define iluminação
+
+    light fonte1;
+    fonte1.state(true);
+    fonte1.coord(0.0,0.5,0.5);
+    fonte1.comp_ambiente(1.0,1.0,1.0);
+    fonte1.comp_difusa(1.0,1.0,1.0);
+    fonte1.comp_specular(1.0,1.0,1.0);
+
+
+    cam.addlight(fonte1);
+
+
+    cam.enableshadow(true);
+//-----------------------------------------------------------------------------------------------------------------------------------
+    //define objetos
+
+    objeto esfera;
+    esfera.tipo("esfera");
+    esfera.raio = 0.02;
+    esfera.centro(0.2,-0.2,-0.5);//0.5,0.0,-2.0
+    esfera.comp_ambiente(0.05,0.06,0.01);//0.2,0.2,0.1
+    esfera.comp_difusa(0.5,0.6,0.1);//0.5,0.5,0.1
+    esfera.comp_specular(1.0,1.0,1.0,20.0);//1.0,1.0,1.0,20.0
+
+
+    objeto esfera2;
+    esfera2.tipo("esfera");
+    esfera2.raio = 0.1;
+    esfera2.centro(0.0,0.0,-3.0);
+    esfera2.comp_ambiente(0.1,0.02,0.02);
+    esfera2.comp_difusa(0.3,0.1,0.1);
+    esfera2.comp_specular(0.3,0.1,0.1,10.0);
+
+
+    objeto plano;
+    plano.tipo("plano");
+    plano.vet_normal(0.0,0.0,1.0);
+    plano.pontop(0.0,0.0,-1.0);
+    plano.comp_ambiente(0.05,0.05,0.05);//0.1,0.1,0.1
+    plano.comp_difusa(0.7,0.7,0.7);//0.7,0.7,0.7
+    plano.comp_specular(0.0,0.0,0.0,5.0);//0.1,0.1,0.1
+    plano.ponto_se(-0.5,0.5,-1.0);
+    plano.ponto_id(0.5,-0.5,-1.0);
+
+    objeto plano2;
+    plano2.tipo("plano");
+    plano2.vet_normal(-1.0,0.0,0.0);
+    plano2.pontop(0.5,0.0,0.0);
+    plano2.comp_ambiente(0.05,0.01,0.01);//0.1,0.02,0.02
+    plano2.comp_difusa(0.3,0.1,0.1);//0.3,0.1,0.1
+    plano2.comp_specular(0.0,0.0,0.0,0.0);//0.3,0.1,0.1
+    plano2.ponto_se(0.5,0.5,-1.0);
+    plano2.ponto_id(0.5,-0.5,1.0);
+
+    objeto plano3;
+    plano3.tipo("plano");
+    plano3.vet_normal(0.0,1.0,0.0);
+    plano3.pontop(0.0,-0.5,0.0);
+    plano3.comp_ambiente(0.01,0.01,0.05);//0.02,0.02,0.1
+    plano3.comp_difusa(0.1,0.1,0.3);//0.1,0.1,0.3
+    plano3.comp_specular(0.0,0.0,0.0,5.0);//0.1,0.1,0.3
+    plano3.ponto_se(-0.5,-0.5,-1.0);
+    plano3.ponto_id(0.5,-0.5,1.0);
+
+    objeto plano4;
+    plano4.tipo("plano");
+    plano4.vet_normal(1.0,0.0,0.0);//1.0,0.0,0.0
+    plano4.pontop(-0.5,0.0,0.0);//-0.5,0.0,0.0
+    plano4.comp_ambiente(0.01,0.05,0.01);//0.02,0.1,0.02
+    plano4.comp_difusa(0.1,0.3,0.1);//0.1,0.3,0.1
+    plano4.comp_specular(0.0,0.0,0.0,5.0);//0.1,0.3,0.1
+    plano4.ponto_se(-0.5,0.5,-1.0);//-0.5,0.5,-1.0
+    plano4.ponto_id(-0.5,-0.5,1.0);//-0.5,-0.5,1.0
+
+
+    objeto cilindro;
+    cilindro.tipo("cilindro");
+    cilindro.raio = 0.01;
+    cilindro.centro(-0.2,0.0,-0.5);
+    cilindro.comp_ambiente(0.1,0.08,0.08);
+    cilindro.comp_difusa(0.5,0.4,0.4);
+    cilindro.comp_specular(1.0,1.0,1.0,5.0);
+
+
+    objeto cubo;
+    cubo.tipo("cubo");
+    cubo.dimencao = 0.2;
+    cubo.centro(0.0,-0.4,-0.2);//0.0,-0.4,-0.2
+    cubo.comp_ambiente(0.0,0.0,0.0);//0.08,0.05,0.05
+    cubo.comp_difusa(1.0,0.27,0.0);//0.8,0.3,0.3
+    cubo.comp_specular(1.0,1.0,1.0,50.0);
+
+    cam.addObj(esfera);
+    cam.addObj(plano);
+    cam.addObj(plano2);
+    cam.addObj(plano3);
+    cam.addObj(plano4);
+    //cam.addObj(cilindro);
+    //cam.addObj(cubo);
+//----------------------------------------------------------------------------------------------------------------------------------
+
+
+
+    cam.intersect();
+
+
+    int r,g,b;
+    for(int i=1;i<=var;i++){
+
+        r = (int)(cam.film[i-1].cor[0]*255);
+        g = (int)(cam.film[i-1].cor[1]*255);
+        b = (int)(cam.film[i-1].cor[2]*255);
+
+        if(r > 255){
+            r = 255;
+        }
+        if(g > 255){
+            g = 255;
+        }
+        if(b > 255){
+            b = 255;
+        }
+
+        value = qRgb(r,g,b);
+        image.setPixel(cam.film[i-1].x_tela,cam.film[i-1].y_tela,value);
+    }
+
+    free(cam.film);
+
+    image.save("teste.png",0,100);
+    return image;
+}
+
