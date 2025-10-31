@@ -6,3 +6,8 @@ Todos os calculos de raytracing são realizados na CPU.
 
 Estas são algumas da imagens gerados pelo renderizador.
 <img width="800" height="800" alt="teste" src="https://github.com/user-attachments/assets/e1f49530-0573-41ed-943a-d6ab301d8056" />
+
+<img width="800" height="800" alt="teste7" src="https://github.com/user-attachments/assets/3348b422-16be-449e-be70-1867d362d527" />
+
+
+
