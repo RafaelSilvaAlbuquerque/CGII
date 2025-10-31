@@ -4,6 +4,10 @@ Neste projeto também foi implementado o mapeamento de texturas 2d sobre objetos
 
 Todos os calculos de raytracing são realizados na CPU. 
 
+
+Para rodar, o projeta usa o Qt 3.0.
+
+
 Estas são algumas da imagens gerados pelo renderizador.
 <img width="800" height="800" alt="teste" src="https://github.com/user-attachments/assets/e1f49530-0573-41ed-943a-d6ab301d8056" />
 
